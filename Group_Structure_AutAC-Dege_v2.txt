@@ -4,7 +4,7 @@
 
 KK:=GF(11^2);
 load"C:/Kudo/Automorphism_new/List_of_Matrices_AutAC-Dege_v2.txt";
-// Load the file "List_of_Matrices_AutAC-Dege.txt".
+// Load the file "List_of_Matrices_AutAC-Dege_v2.txt".
 // Replace "Kudo/Automorphism_new" by the name of a folder including the file "List_of_Matrices_AutAC-Dege.txt"
 // The file includes all elements in each automorphism group.
 // Each element is represented as an element in the general linear group of degree 4 over the algebraic closure of F11.
