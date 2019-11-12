@@ -159,7 +159,7 @@ O3 := MA*T*U1*V;
 O4 := MA*T*U1*S*U2*V;
 O := [O1,O2,O3,O4];
 
-//SetLogFile("List_of_Matrices_AutAC-Dege_v2.txt");
+SetLogFile("List_of_Matrices_AutAC-Dege_v2.txt");
 
 Mat_set_Dege:=[];
 
