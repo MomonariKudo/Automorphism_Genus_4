@@ -1,0 +1,212 @@
+// Note: Before executing this code, please put the following file into an appropriate folder
+// ZeroDimensionalIdealVariety.txt
+
+load"C:/Kudo/Automorphism_new/ZeroDimensionalIdealVariety.txt";
+// Load the file "ZeroDimensionalIdealVariety.txt".
+// Replace "Kudo/Automorphism_new" by the name of a folder including the file "ZeroDimensionalIdealVariety.txt"
+
+/*************/
+EvaluationToMatrix:= function(M,v)
+
+	MM:=[];
+	for i in [1..Nrows(M)] do
+		MM[i]:=[];
+		for j in [1..Ncols(M)] do
+			MM[i][j]:=Evaluate(M[i,j],v);
+		end for;
+	end for;
+
+	return Matrix(MM);
+
+end function;
+/*************/
+
+
+/********************************************************************/
+// Given two mtrices A and B, this function returns
+// true if A = a*B for some a in K with a ne 0, false otherwise.
+/********************************************************************/
+Equiv:=function(A,B,K)
+
+	flag:=0;
+	for a in [b : b in K | b ne K!0] do
+		if A eq a*B then
+			flag:=1;
+			break a;
+		end if;
+	end for;
+
+	if flag eq 1 then
+		return true;
+	else
+		return false;
+	end if;
+
+end function;
+
+
+
+p:=11; 
+K:=FiniteField(p);
+
+L<a1,a2,a3,s,b,c,d,t,e1,e2,e3,r> := PolynomialRing(K,12,"grevlex");
+L0<x,y,z,w> := PolynomialRing(L,4);
+Q := 2*y*w + z^2;
+
+Polynomial:=[x^3+y^3+w^3,x^3+y^3+2*w^3,x^3+y^3+z^3+5*w^3,x^3+y^3+x*w^2,x^3+y^3+2*x*w^2,x^3+y^3+7*z^3+w^3+x*z*w,4*w^3+w^2*x+x^3+x*y*z+y^3+5*z^3,8*w^3+6*w^2*x+x^3+x*y*z+y^3+8*z^3,4*w^3+w^2*z+x^3+5*y^3+2*y*z^2+z^3,x^3+y^3+2*w^3+8*y*z^2+w*z^2,3*w^3+w*z^2+x^3+2*y^3+2*y*z^2+4*z^3,10*w^3+w*z^2+x^3+2*y^3+4*y*z^2,7*w^3+w^2*z+w*z^2+x^3+2*y^3+4*y*z^2+z^3,7*w^3+2*w^2*x+w^2*z+8*w*x*z+w*z^2+x^3+x*y^2+7*x*y*z+8*x*z^2+2*y^3+4*y*z^2+z^3,10*w^3+w^2*z+w*z^2+x^3+5*y^3+3*y*z^2+5*z^3,6*w^3+w^2*z+w*z^2+x^3+6*y^3+2*y*z^2+6*z^3,w^2*z+w*z^2+x^3+10*y^3+6*y*z^2+7*z^3];
+//Polynomial := [x^3+y^3+2*w^3+8*y*z^2+w*z^2,10*w^3+w*z^2+x^3+2*y^3+4*y*z^2,x^3+y^3+x*w^2,x^3+y^3+7*z^3+w^3+x*z*w,4*w^3+w^2*x+x^3+x*y*z+y^3+5*z^3,8*w^3+6*w^2*x+x^3+x*y*z+y^3+8*z^3];
+
+E := Matrix(L0,4,4,[1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+MA := Matrix(L0,4,4,[1,0,0,0, 0,1,0,0, 0,0,-1,0, 0,0,0,1]);
+T0 := Matrix(L0,4,4,[1,0,0,0, 0,a1,0,0, 0,0,1,0, 0,0,0,a2]);
+T := Matrix(L0,4,4,[1,0,0,0, 0,a3,0,0, 0,0,a3,0, 0,0,0,a3])*T0;
+U1 := Matrix(L0,4,4,[1,0,0,0, 0,1,b,-b^2/2, 0,0,1,-b, 0,0,0,1]);
+U2 := Matrix(L0,4,4,[1,0,0,0, 0,1,c,-c^2/2, 0,0,1,-c, 0,0,0,1]);
+S := Matrix(L0,4,4,[1,0,0,0, 0,0,0,1, 0,0,1,0, 0,1,0,0]);
+V := Matrix(L0,4,4,[d,e1,e2,e3, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+
+O1 := E*T*U1*V;
+O2 := E*T*U1*S*U2*V;
+O3 := MA*T*U1*V;
+O4 := MA*T*U1*S*U2*V;
+O := [O1,O2,O3,O4];
+
+Var := Matrix(4,1,[x, y, z, w]);
+
+Aut:=[];
+for P in Polynomial do
+	Aut_P := [];
+	for n in [1..4] do
+		Aut_ideal:={};
+		R := O[n]; S := R*Var;
+		X := S[1][1]; Y := S[2][1]; Z := S[3][1]; W := S[4][1];
+		F1 := Evaluate(P,<X,Y,Z,W>); 
+		F2 := F1 - r*P;
+		F3 := F2 - (z^2 + 2*y*w)*(Coefficient(F2,3,2) + Coefficient(F2,3,3)*z);
+		for i,j,k,l in [0..3] do
+			if i + j + k + l eq 3 then
+				Deg := [i,j,k,l];
+				Coef := F3;
+				m := 1;
+				while m le 4 do
+					Coef := Coefficient(Coef,m,Deg[m]);
+					m := m + 1;
+				end while;
+				if Coef ne 0 then
+					Aut_ideal := Aut_ideal join {Coef};
+				end if;
+			end if;
+		end for;
+		if n eq 1 or n eq 3 then
+			Aut_ideal := Aut_ideal join {c};
+		end if;
+		Aut_ideal := Aut_ideal join {a1*a2-1,a3*s-1,d*t-1,r-1};
+		Aut_ideal := SetToSequence(Aut_ideal);
+		Aut_P[n]:=[];
+		for i in [1..#Aut_ideal] do
+			Aut_P[n][i]:=MonomialCoefficient(Aut_ideal[i],1);
+		end for;
+	end for;
+	Aut:=Append(Aut,Aut_P);
+end for;
+
+
+
+for j in [1..#Aut] do
+	for i in [1..#Aut[j]] do
+		for k in [1..Rank(L)] do
+			Aut[j][i]:=Append(Aut[j][i],(L.(k))^p-(L.(k)));
+		end for;
+	end for;
+end for;
+
+
+V_set_prime:=[];
+
+"========";
+for j in [1..#Aut] do
+	V_set_prime[j]:=[];
+	"P_{",j,"}^(Dege)=", Polynomial[j];
+	num_root_prime:=0;
+	for i in [1..#Aut[j]] do
+		V_set_prime[j][i]:=[];
+		F:=Aut[j][i];
+		G:=GroebnerBasis(F);
+		if 1 in G then
+			//"no root";
+		elif Dimension(ideal<L|F>) gt 0 then
+			"not zero dimensional!";
+		else
+			V_prime,KK:=ZeroDimensionalIdealVarietyOverAlgebraicClosure(F);
+			V_set_prime[j][i]:=V_set_prime[j][i] cat V_prime;
+			num_root_prime:=num_root_prime+#V_prime;
+		end if;
+	end for;
+	"total roots:", num_root_prime;
+	"========";
+end for;
+
+
+E := Matrix(L,4,4,[1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+MA := Matrix(L,4,4,[1,0,0,0, 0,1,0,0, 0,0,-1,0, 0,0,0,1]);
+T0 := Matrix(L,4,4,[1,0,0,0, 0,a1,0,0, 0,0,1,0, 0,0,0,a2]);
+T := Matrix(L,4,4,[1,0,0,0, 0,a3,0,0, 0,0,a3,0, 0,0,0,a3])*T0;
+U1 := Matrix(L,4,4,[1,0,0,0, 0,1,b,-b^2/2, 0,0,1,-b, 0,0,0,1]);
+U2 := Matrix(L,4,4,[1,0,0,0, 0,1,c,-c^2/2, 0,0,1,-c, 0,0,0,1]);
+S := Matrix(L,4,4,[1,0,0,0, 0,0,0,1, 0,0,1,0, 0,1,0,0]);
+V := Matrix(L,4,4,[d,e1,e2,e3, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+
+O1 := E*T*U1*V;
+O2 := E*T*U1*S*U2*V;
+O3 := MA*T*U1*V;
+O4 := MA*T*U1*S*U2*V;
+O := [O1,O2,O3,O4];
+
+SetLogFile("List_of_Matrices_AutPrime-Dege_v2.txt");
+
+V_set:=V_set_prime;
+Mat_set_Dege:=[];
+
+count:=0;
+for j in [1..#V_set] do
+	Mat_set:=[];
+	for i in [1..#V_set[j]] do
+		if #V_set[j][i] ne 0 then
+			for k in [1..#V_set[j][i]] do
+				
+				Mat_set:=Append(Mat_set,EvaluationToMatrix(O[i],V_set[j][i][k]));
+				
+			end for;
+		end if;
+		
+	end for;
+	Mat_set_Dege[j]:=Mat_set;
+end for;
+
+
+"M_Dege:=[];";
+
+MM_Dege:=Mat_set_Dege;
+
+
+"//------------";
+for kk in [1..#MM_Dege] do
+	"M:=[];";
+	count:=0;
+	for k in [1..#MM_Dege[kk]] do
+		count:=count+1;
+		"M[",count,"]:=Matrix([";
+		for i in [1..4] do
+			[MM_Dege[kk][k][i,j]: j in [1..4]];
+			if i ne 4 then
+				",";
+			end if;
+		end for;
+		"]);";
+	end for;
+	"M_Dege[",kk,"]:=","M;";
+	"//------------";
+end for;
+
+
+//UnsetLogFile();
