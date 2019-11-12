@@ -176,7 +176,7 @@ C1:=B1*E*U34; C2:=B1*S1*U34; C3:=B1*S2*U34; C4:=B1*S12*U34;
 C5:=B2*E*U34; C6:=B2*S1*U34; C7:=B2*S2*U34; C8:=B2*S12*U34;
 O:=[C1,C2,C3,C4,C5,C6,C7,C8];
 
-//SetLogFile("List_of_Matrices_AutAC-N1_v2.txt");
+SetLogFile("List_of_Matrices_AutAC-N1_v2.txt");
 
 Mat_set_N1:=[];
 
