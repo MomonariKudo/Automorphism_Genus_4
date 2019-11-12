@@ -1,0 +1,62 @@
+// This code finds an isomorphism between each automorphism group and a finite group.
+// Note: Before executing this code, please put the following file into an appropriate folder
+// List_of_Matrices_AutPrime-Dege.txt
+
+KK:=GF(11);
+load"C:/Kudo/Automorphism_new/List_of_Matrices_AutPrime-Dege_v2.txt";
+// Load the file "List_of_Matrices_AutPrime-Dege.txt".
+// Replace "Kudo/Automorphism_new" by the name of a folder including the file "List_of_Matrices_AutPrime-Dege.txt"
+// The file includes all elements in each automorphism group.
+// Each element is represented as an element in the general linear group of degree 4 over F11.
+
+GL4:=GeneralLinearGroup(4,KK);
+FG:=[];
+FG[1]:=DirectProduct(CyclicGroup(2),CyclicGroup(2));
+FG[2]:=DirectProduct(CyclicGroup(2),CyclicGroup(2));
+FG[3]:=DirectProduct(CyclicGroup(2),CyclicGroup(2));
+FG[4]:=CyclicGroup(2);
+FG[5]:=CyclicGroup(2);
+FG[6]:=CyclicGroup(1);
+FG[7]:=CyclicGroup(2);
+FG[8]:=CyclicGroup(1);
+FG[9]:=CyclicGroup(6);
+FG[10]:=DihedralGroup(6);
+FG[11]:=DihedralGroup(6);
+FG[12]:=SymmetricGroup(4);
+FG[13]:=CyclicGroup(4);
+FG[14]:=CyclicGroup(2);
+FG[15]:=CyclicGroup(6);
+FG[16]:=CyclicGroup(3);
+FG[17]:=DihedralGroup(4);
+
+"=========================";
+for k in [1..#M_Dege] do
+	"P_{",k,"}^(Dege)";
+	"-------------------------";
+	"Candidate for the finite group isomorphic to Aut_K (C) with C = V(Q,P):";
+	"----------";
+	FG[k];
+	"-------------------------";
+	G:=sub<GL4|M_Dege[k]>;
+	bool,iso:=IsIsomorphic(G,FG[k]);
+	Gen:=SetToSequence(Generators(G));
+
+	/*
+	for i in [1..#Gen] do
+
+		Gen[i],"|--->",iso(Gen[i]);
+		"-------------------------";
+
+	end for;
+	*/
+
+	Gen2:=SetToSequence(Generators(FG[k]));
+	for i in [1..#Gen2] do
+
+		Gen2[i],"|--->",(iso^(-1))(Gen2[i]);
+		"Order:", Order(Gen2[i]);
+		"----------";
+
+	end for;
+	"=========================";
+end for;
