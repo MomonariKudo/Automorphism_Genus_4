@@ -1,6 +1,6 @@
 // Note: Before executing this code, please put the following two files into an appropriate folder
-// 1. List_of_Matrices_AutAC-N1.txt
-// 2. List_of_Matrices_AutAC-Dege.txt
+// 1. List_of_Matrices_AutAC-N1_v2.txt
+// 2. List_of_Matrices_AutAC-Dege_v2.txt
 
 KK:=GF(11^2);
 K:=KK;
